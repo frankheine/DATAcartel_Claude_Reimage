@@ -1,1 +1,124 @@
 @import "tailwindcss";
+
+@theme {
+  --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
+  --font-heading: "Chakra Petch", sans-serif;
+  --font-orbitron: "Orbitron", sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, monospace;
+
+  --color-brand-bg: #050505;
+  --color-brand-accent: #7209b7;
+  --color-brand-iridescent: #a855f7;
+  --color-signal-cyan: #5eead4;
+  --color-warn-amber: #f59e0b;
+}
+
+body, html, #root {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  min-height: 100vh;
+  background-color: var(--color-brand-bg);
+  color: white;
+  font-family: var(--font-sans);
+  overflow-x: hidden;
+}
+
+/* Base custom classes if needed */
+.perspective-container {
+  perspective: 2000px;
+  transform-style: preserve-3d;
+}
+
+.transform-style-3d {
+  transform-style: preserve-3d;
+}
+
+/* --- Containment viewport: the signature panel treatment. --- */
+/* A reinforced glass window onto the sealed core, not a card. */
+.viewport-panel {
+  position: relative;
+  background: linear-gradient(160deg, rgba(255,255,255,0.045), rgba(255,255,255,0.015));
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+  border-radius: 2px;
+  padding: 1.5rem 1.75rem;
+  overflow: hidden;
+  isolation: isolate;
+}
+
+/* Thin gradient seam instead of a flat border */
+.viewport-panel::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  padding: 1px;
+  border-radius: 2px;
+  background: linear-gradient(135deg, rgba(94,234,212,0.55), rgba(168,85,247,0.35) 45%, rgba(94,234,212,0.15));
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  pointer-events: none;
+}
+
+/* Slow vertical scanline drifting through the glass */
+.viewport-panel::after {
+  content: "";
+  position: absolute;
+  left: 0; right: 0;
+  height: 40%;
+  top: -40%;
+  background: linear-gradient(180deg, transparent, rgba(94,234,212,0.06), transparent);
+  animation: scanline-drift 6s linear infinite;
+  pointer-events: none;
+}
+
+@keyframes scanline-drift {
+  0% { top: -40%; }
+  100% { top: 100%; }
+}
+
+/* HUD corner brackets */
+.viewport-panel .bracket {
+  position: absolute;
+  width: 14px;
+  height: 14px;
+  border: 1.5px solid var(--color-signal-cyan);
+  opacity: 0.7;
+  pointer-events: none;
+}
+.viewport-panel .bracket-tl { top: 6px; left: 6px; border-right: none; border-bottom: none; }
+.viewport-panel .bracket-br { bottom: 6px; right: 6px; border-left: none; border-top: none; }
+
+.module-tag {
+  font-family: var(--font-mono);
+  font-size: 0.65rem;
+  letter-spacing: 0.15em;
+  color: var(--color-signal-cyan);
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5em;
+  text-transform: uppercase;
+}
+
+.status-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--color-signal-cyan);
+  box-shadow: 0 0 6px 1px var(--color-signal-cyan);
+  animation: status-pulse 2s ease-in-out infinite;
+  flex-shrink: 0;
+}
+
+@keyframes status-pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.35; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .viewport-panel::after,
+  .status-dot {
+    animation: none;
+  }
+}
